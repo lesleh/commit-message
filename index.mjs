@@ -4,7 +4,7 @@ import { promisify } from "node:util";
 
 const execAsync = promisify(exec);
 
-const diff = await execAsync("git diff HEAD~1");
+const diff = await execAsync("git diff");
 
 const openai = new OpenAIApi(
   new Configuration({
@@ -13,7 +13,7 @@ const openai = new OpenAIApi(
 );
 
 const completion = await openai.createChatCompletion({
-  model: "gpt-3.5-turbo",
+  model: "gpt-4",
   messages: [
     {
       role: "user",
@@ -33,5 +33,4 @@ const completion = await openai.createChatCompletion({
   ],
 });
 
-console.log(diff);
 console.log(completion.data.choices[0].message);
