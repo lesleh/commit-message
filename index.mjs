@@ -4,8 +4,6 @@ import { promisify } from "node:util";
 
 const execAsync = promisify(exec);
 
-const { stdout: diff } = await execAsync("git diff");
-
 const openai = new OpenAIApi(
   new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
@@ -19,12 +17,16 @@ class CommitMessageGenerator {
     this.#openai = openai;
   }
 
-  #getDiff() {
-    return execAsync("git diff");
+  async #getDiff() {
+    if (process.env.DIFF) {
+      return process.env.DIFF;
+    }
+    const { stdout: diff } = await execAsync("git diff");
+    return diff;
   }
 
   async generateCommitMessage() {
-    const { stdout: diff } = await this.#getDiff();
+    const diff = await this.#getDiff();
 
     const completion = await this.#openai.createChatCompletion({
       model: "gpt-4",
