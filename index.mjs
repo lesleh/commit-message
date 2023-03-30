@@ -18,10 +18,7 @@ class CommitMessageGenerator {
   }
 
   async #getDiff() {
-    if (process.env.DIFF) {
-      return process.env.DIFF;
-    }
-    const { stdout: diff } = await execAsync("git diff");
+    const { stdout: diff } = await execAsync("git diff HEAD");
     return diff;
   }
 
